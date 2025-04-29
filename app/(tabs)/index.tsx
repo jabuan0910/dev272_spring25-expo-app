@@ -1,74 +1,77 @@
-import { useState } from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  Button,
-  ScrollView,
-  FlatList,
-  StyleSheet,
-} from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, TextInput, Button, FlatList, StyleSheet } from 'react-native';
 
 export default function HomeScreen() {
-  const [search, setSearch] = useState('');
-  const [data, setData] = useState([
-    { id: '1', name: 'React Native' },
-    { id: '2', name: 'Expo' },
-    { id: '3', name: 'JavaScript' },
-    { id: '4', name: 'Mobile Development' },
-    { id: '5', name: 'Assignment 2' },
+  const [searchText, setSearchText] = useState('');
+  const [items, setItems] = useState([
+    'React Native',
+    'Expo',
+    'JavaScript',
+    'Mobile Development',
+    'Assignment 2',
   ]);
 
+  const [filteredItems, setFilteredItems] = useState(items);
+
   const handleSearch = () => {
-    console.log('Search triggered:', search);
+    const filtered = items.filter(item =>
+      item.toLowerCase().includes(searchText.toLowerCase())
+    );
+    setFilteredItems(filtered);
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <View style={styles.container}>
       <Text style={styles.title}>Welcome to Assignment 2 📱</Text>
 
       <TextInput
-        placeholder="Search items..."
-        value={search}
-        onChangeText={setSearch}
         style={styles.input}
+        placeholder="Search items..."
+        value={searchText}
+        onChangeText={setSearchText}
       />
 
       <Button title="Search" onPress={handleSearch} />
 
       <FlatList
-        data={data}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => <Text style={styles.item}>{item.name}</Text>}
+        data={filteredItems}
+        keyExtractor={(item, index) => index.toString()}
+        renderItem={({ item }) => (
+          <View style={styles.listItem}>
+            <Text style={styles.itemText}>{item}</Text>
+          </View>
+        )}
       />
-    </ScrollView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     padding: 20,
-    alignItems: 'center',
+    backgroundColor: '#fff',
   },
   title: {
     fontSize: 22,
-    marginBottom: 16,
     fontWeight: 'bold',
+    alignSelf: 'center',
+    marginBottom: 20,
   },
   input: {
-    width: '100%',
     borderWidth: 1,
     borderColor: '#ccc',
     padding: 10,
+    borderRadius: 8,
     marginBottom: 10,
-    borderRadius: 5,
   },
-  item: {
-    fontSize: 18,
-    padding: 10,
-    backgroundColor: '#f0f0f0',
-    marginBottom: 5,
-    width: '100%',
-    textAlign: 'center',
+  listItem: {
+    padding: 15,
+    marginVertical: 5,
+    backgroundColor: '#f2f2f2',
+    borderRadius: 8,
+  },
+  itemText: {
+    fontSize: 16,
   },
 });
