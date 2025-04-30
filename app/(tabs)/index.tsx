@@ -1,21 +1,24 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { View, Text, TextInput, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
+import { useTasks } from '../TaskContext'; // adjust path as needed
+import { Button } from 'react-native';
 
 export default function HomeScreen() {
   const router = useRouter();
+  const { tasks, setTasks } = useTasks(); // ✅ Use global task list
   const [searchText, setSearchText] = useState('');
-  const [items, setItems] = useState([
-    'React Native',
-    'Expo',
-    'JavaScript',
-    'Mobile Development',
-    'Assignment 3',
-  ]);
-  const [filteredItems, setFilteredItems] = useState(items);
+  const [filteredItems, setFilteredItems] = useState<string[]>(tasks); // ✅ Based on context
+
+  // Optional: Debug check
+  console.log('✅ Tasks from context:', tasks);
+
+  useEffect(() => {
+    setFilteredItems(tasks); // ✅ Refresh when tasks update
+  }, [tasks]);
 
   const handleSearch = () => {
-    const filtered = items.filter(item =>
+    const filtered = tasks.filter(item =>
       item.toLowerCase().includes(searchText.toLowerCase())
     );
     setFilteredItems(filtered);
@@ -34,11 +37,29 @@ export default function HomeScreen() {
 
       <TextInput
         style={styles.input}
-        placeholder="Search items..."
+        placeholder="Search tasks..."
         value={searchText}
         onChangeText={setSearchText}
+        onSubmitEditing={handleSearch} // triggers search on Enter
       />
 
+      {/* ✅ Test Button */}
+      <Button
+        title="Add Test Task"
+        onPress={() => {
+          if (!tasks.includes('Test Task from Context')) {
+            setTasks(prev => [...prev, 'Test Task from Context']);
+          }
+        }}
+      />
+
+      <View style={{ height: 10 }} />
+
+      <Button
+        title="+ Add New Task"
+        onPress={() => router.push('/add-task')}
+      />
+        
       <FlatList
         data={filteredItems}
         keyExtractor={(item, index) => index.toString()}
