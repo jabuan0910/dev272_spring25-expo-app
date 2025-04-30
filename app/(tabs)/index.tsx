@@ -1,16 +1,17 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, Button, FlatList, StyleSheet } from 'react-native';
+import { useState } from 'react';
+import { View, Text, TextInput, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
+import { useRouter } from 'expo-router';
 
 export default function HomeScreen() {
+  const router = useRouter();
   const [searchText, setSearchText] = useState('');
   const [items, setItems] = useState([
     'React Native',
     'Expo',
     'JavaScript',
     'Mobile Development',
-    'Assignment 2',
+    'Assignment 3',
   ]);
-
   const [filteredItems, setFilteredItems] = useState(items);
 
   const handleSearch = () => {
@@ -20,9 +21,16 @@ export default function HomeScreen() {
     setFilteredItems(filtered);
   };
 
+  const handlePress = (item: string) => {
+    router.push({
+      pathname: '/detail',
+      params: { item },
+    });
+  };
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Welcome to Assignment 2 📱</Text>
+      <Text style={styles.title}>Assignment 3 Task List 📱</Text>
 
       <TextInput
         style={styles.input}
@@ -31,15 +39,13 @@ export default function HomeScreen() {
         onChangeText={setSearchText}
       />
 
-      <Button title="Search" onPress={handleSearch} />
-
       <FlatList
         data={filteredItems}
         keyExtractor={(item, index) => index.toString()}
         renderItem={({ item }) => (
-          <View style={styles.listItem}>
+          <TouchableOpacity style={styles.listItem} onPress={() => handlePress(item)}>
             <Text style={styles.itemText}>{item}</Text>
-          </View>
+          </TouchableOpacity>
         )}
       />
     </View>
