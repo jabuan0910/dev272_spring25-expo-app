@@ -44,14 +44,14 @@ export default function HomeScreen() {
       />
 
       {/* ✅ Test Button */}
-      <Button
+      {/* <Button
         title="Add Test Task"
         onPress={() => {
           if (!tasks.includes('Test Task from Context')) {
             setTasks(prev => [...prev, 'Test Task from Context']);
           }
         }}
-      />
+      /> */}
 
       <View style={{ height: 10 }} />
 
