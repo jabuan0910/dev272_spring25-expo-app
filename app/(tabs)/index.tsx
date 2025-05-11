@@ -1,32 +1,41 @@
-import { useState, useEffect } from 'react';
-import { View, Text, TextInput, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
-import { useRouter } from 'expo-router';
-import { useTasks } from '../TaskContext'; // adjust path as needed
-import { Button } from 'react-native';
+import { useState, useEffect } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  FlatList,
+  TouchableOpacity,
+  StyleSheet,
+} from "react-native";
+import { useRouter } from "expo-router";
+import { useTasks } from "../TaskContext"; // adjust path as needed
+import { Button } from "react-native";
 
 export default function HomeScreen() {
   const router = useRouter();
   const { tasks, setTasks } = useTasks(); // ✅ Use global task list
-  const [searchText, setSearchText] = useState('');
+  const [searchText, setSearchText] = useState("");
   const [filteredItems, setFilteredItems] = useState<string[]>(tasks); // ✅ Based on context
 
   // Optional: Debug check
-  console.log('✅ Tasks from context:', tasks);
+  console.log("✅ Tasks from context:", tasks);
 
   useEffect(() => {
     setFilteredItems(tasks); // ✅ Refresh when tasks update
   }, [tasks]);
 
-  const handleSearch = () => {
-    const filtered = tasks.filter(item =>
-      item.toLowerCase().includes(searchText.toLowerCase())
+  const handleSearch = (text: any) => {
+    setSearchText(text);
+
+    const filtered = tasks.filter((item) =>
+      item.toLowerCase().includes(text.toLowerCase())
     );
     setFilteredItems(filtered);
   };
 
   const handlePress = (item: string) => {
     router.push({
-      pathname: '/detail',
+      pathname: "/detail",
       params: { item },
     });
   };
@@ -39,8 +48,8 @@ export default function HomeScreen() {
         style={styles.input}
         placeholder="Search tasks..."
         value={searchText}
-        onChangeText={setSearchText}
-        onSubmitEditing={handleSearch} // triggers search on Enter
+        // onChangeText={setSearchText}
+        onChangeText={(text) => handleSearch(text)} // triggers search on Enter
       />
 
       {/* ✅ Test Button */}
@@ -55,16 +64,16 @@ export default function HomeScreen() {
 
       <View style={{ height: 10 }} />
 
-      <Button
-        title="+ Add New Task"
-        onPress={() => router.push('/add-task')}
-      />
-        
+      <Button title="+ Add New Task" onPress={() => router.push("/add-task")} />
+
       <FlatList
         data={filteredItems}
         keyExtractor={(item, index) => index.toString()}
         renderItem={({ item }) => (
-          <TouchableOpacity style={styles.listItem} onPress={() => handlePress(item)}>
+          <TouchableOpacity
+            style={styles.listItem}
+            onPress={() => handlePress(item)}
+          >
             <Text style={styles.itemText}>{item}</Text>
           </TouchableOpacity>
         )}
@@ -77,17 +86,17 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   title: {
     fontSize: 22,
-    fontWeight: 'bold',
-    alignSelf: 'center',
+    fontWeight: "bold",
+    alignSelf: "center",
     marginBottom: 20,
   },
   input: {
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     padding: 10,
     borderRadius: 8,
     marginBottom: 10,
@@ -95,7 +104,7 @@ const styles = StyleSheet.create({
   listItem: {
     padding: 15,
     marginVertical: 5,
-    backgroundColor: '#f2f2f2',
+    backgroundColor: "#f2f2f2",
     borderRadius: 8,
   },
   itemText: {
