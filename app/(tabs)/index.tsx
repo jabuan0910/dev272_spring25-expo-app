@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+// app/(tabs)/index.tsx
+import React, { useContext, useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -6,108 +7,75 @@ import {
   FlatList,
   TouchableOpacity,
   StyleSheet,
+  Button,
 } from "react-native";
 import { useRouter } from "expo-router";
-import { useTasks } from "../TaskContext"; // adjust path as needed
-import { Button } from "react-native";
+import { ItemsContext } from "../../context/ItemsContext"; // ← correct path
 
-export default function HomeScreen() {
+export default function HomeTab() {
   const router = useRouter();
-  const { tasks, setTasks } = useTasks(); // ✅ Use global task list
+  const { items } = useContext(ItemsContext); // ← useContext here
   const [searchText, setSearchText] = useState("");
-  const [filteredItems, setFilteredItems] = useState<string[]>(tasks); // ✅ Based on context
-
-  // Optional: Debug check
-  console.log("✅ Tasks from context:", tasks);
+  const [filtered, setFiltered] = useState(items);
 
   useEffect(() => {
-    setFilteredItems(tasks); // ✅ Refresh when tasks update
-  }, [tasks]);
+    setFiltered(items);
+  }, [items]);
 
-  const handleSearch = (text: any) => {
+  const onSearch = (text: string) => {
     setSearchText(text);
-
-    const filtered = tasks.filter((item) =>
-      item.toLowerCase().includes(text.toLowerCase())
+    setFiltered(
+      items.filter((i) => i.name.toLowerCase().includes(text.toLowerCase()))
     );
-    setFilteredItems(filtered);
-  };
-
-  const handlePress = (item: string) => {
-    router.push({
-      pathname: "/detail",
-      params: { item },
-    });
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Assignment 3 Task List 📱</Text>
+      <Text style={styles.title}>My Saved Items</Text>
 
       <TextInput
         style={styles.input}
-        placeholder="Search tasks..."
+        placeholder="Search items..."
         value={searchText}
-        // onChangeText={setSearchText}
-        onChangeText={(text) => handleSearch(text)} // triggers search on Enter
+        onChangeText={onSearch}
       />
 
-      {/* ✅ Test Button */}
-      {/* <Button
-        title="Add Test Task"
-        onPress={() => {
-          if (!tasks.includes('Test Task from Context')) {
-            setTasks(prev => [...prev, 'Test Task from Context']);
-          }
-        }}
-      /> */}
-
-      <View style={{ height: 10 }} />
-
-      <Button title="+ Add New Task" onPress={() => router.push("/add-task")} />
+      <Button
+        title="+ Add New Item"
+        onPress={() => router.push("/add-item")} // ← routes to app/add-item.tsx
+      />
 
       <FlatList
-        data={filteredItems}
-        keyExtractor={(item, index) => index.toString()}
+        style={{ marginTop: 12 }}
+        data={filtered}
+        keyExtractor={(i) => i.id}
         renderItem={({ item }) => (
-          <TouchableOpacity
-            style={styles.listItem}
-            onPress={() => handlePress(item)}
-          >
-            <Text style={styles.itemText}>{item}</Text>
+          <TouchableOpacity style={styles.card}>
+            <Text style={styles.name}>{item.name}</Text>
+            <Text style={styles.desc}>{item.description}</Text>
           </TouchableOpacity>
         )}
+        ListEmptyComponent={<Text>No items yet</Text>}
       />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    backgroundColor: "#fff",
-  },
+  container: { flex: 1, padding: 20 },
   title: {
     fontSize: 22,
     fontWeight: "bold",
-    alignSelf: "center",
     marginBottom: 20,
+    textAlign: "center",
   },
-  input: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    padding: 10,
-    borderRadius: 8,
-    marginBottom: 10,
-  },
-  listItem: {
-    padding: 15,
-    marginVertical: 5,
+  input: { borderWidth: 1, borderColor: "#ccc", padding: 10, borderRadius: 8 },
+  card: {
     backgroundColor: "#f2f2f2",
+    padding: 15,
+    marginVertical: 8,
     borderRadius: 8,
   },
-  itemText: {
-    fontSize: 16,
-  },
+  name: { fontSize: 16, fontWeight: "600" },
+  desc: { fontSize: 14, color: "#555", marginTop: 4 },
 });

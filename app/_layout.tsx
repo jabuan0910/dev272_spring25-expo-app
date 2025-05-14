@@ -1,17 +1,22 @@
 // app/_layout.tsx
 import React from "react";
 import { Stack } from "expo-router";
-import { TaskProvider } from "./TaskContext";
+import { ItemsProvider } from "../context/ItemsContext";
 
-export default function RootLayout() {
+export default function App() {
   return (
-    <TaskProvider>
-      <Stack screenOptions={{ headerBackTitle: "Home" }}>
+    <ItemsProvider>
+      <Stack
+        screenOptions={{
+          headerBackTitle: "Back",
+          headerTitleAlign: "center",
+        }}
+      >
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="add-task" options={{ title: "Add Task" }} />
+        <Stack.Screen name="add-item" options={{ title: "Save Data" }} />
         <Stack.Screen name="detail" options={{ title: "Detail" }} />
         <Stack.Screen name="+not-found" options={{ title: "Oops!" }} />
       </Stack>
-    </TaskProvider>
+    </ItemsProvider>
   );
 }
