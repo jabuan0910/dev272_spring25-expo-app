@@ -1,5 +1,5 @@
 // app/(tabs)/index.tsx
-import React, { useContext, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -10,24 +10,35 @@ import {
   Button,
 } from "react-native";
 import { useRouter } from "expo-router";
-import { ItemsContext } from "../../context/ItemsContext"; // ← correct path
+import { useDogBreeds, DogBreed } from "../../hooks/useDogBreeds";
 
 export default function HomeTab() {
   const router = useRouter();
-  const { items } = useContext(ItemsContext); // ← useContext here
+  const { data, isLoading, isError } = useDogBreeds(); // ✅ safe default
+  const breeds: DogBreed[] = data ?? [];
+
   const [searchText, setSearchText] = useState("");
-  const [filtered, setFiltered] = useState(items);
+  const [filtered, setFiltered] = useState<DogBreed[]>([]);
 
   useEffect(() => {
-    setFiltered(items);
-  }, [items]);
+    setFiltered(breeds);
+  }, [breeds]);
 
   const onSearch = (text: string) => {
     setSearchText(text);
-    setFiltered(
-      items.filter((i) => i.name.toLowerCase().includes(text.toLowerCase()))
+    const filteredBreeds = breeds.filter((breed) =>
+      breed.name.toLowerCase().includes(text.toLowerCase())
     );
+    setFiltered(filteredBreeds);
   };
+
+  // if (!isLoading) {
+  //   return <Text>Loading from Supabase...</Text>;
+  // }
+
+  // if (isError) {
+  //   return <Text>Failed to load dog breeds.</Text>;
+  // }
 
   return (
     <View style={styles.container}>
@@ -40,19 +51,16 @@ export default function HomeTab() {
         onChangeText={onSearch}
       />
 
-      <Button
-        title="+ Add New Item"
-        onPress={() => router.push("/add-item")} // ← routes to app/add-item.tsx
-      />
+      <Button title="+ Add New Item" onPress={() => router.push("/add-item")} />
 
       <FlatList
         style={{ marginTop: 12 }}
         data={filtered}
-        keyExtractor={(i) => i.id}
+        keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <TouchableOpacity style={styles.card}>
             <Text style={styles.name}>{item.name}</Text>
-            <Text style={styles.desc}>{item.description}</Text>
+            <Text style={styles.desc}>{item.origin ?? "Unknown origin"}</Text>
           </TouchableOpacity>
         )}
         ListEmptyComponent={<Text>No items yet</Text>}
