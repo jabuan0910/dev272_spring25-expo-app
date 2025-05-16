@@ -14,11 +14,27 @@ import { useDogBreeds, DogBreed } from "../../hooks/useDogBreeds";
 
 export default function HomeTab() {
   const router = useRouter();
-  const { data, isLoading, isError } = useDogBreeds(); // ✅ safe default
-  const breeds: DogBreed[] = data ?? [];
+
+  const { data: breeds = [], isLoading, isError } = useDogBreeds(); // ✅ safe default
 
   const [searchText, setSearchText] = useState("");
   const [filtered, setFiltered] = useState<DogBreed[]>([]);
+
+  if (isLoading) {
+    return (
+      <View style={styles.container}>
+        <Text>Loading from Supabase...</Text>
+      </View>
+    );
+  }
+
+  if (isError) {
+    return (
+      <View style={styles.container}>
+        <Text>Failed to load dog breeds.</Text>
+      </View>
+    );
+  }
 
   useEffect(() => {
     setFiltered(breeds);
