@@ -1,29 +1,36 @@
-# 📱 Assignment 2 – React Native Landing Page
+# Dog Breed Explorer – DEV272 Assignment 5
 
-This project was created as part of **DEV 272 – Implementation of a Mobile Solution** at Bellevue College. The goal was to build a simple mobile landing screen using React Native and Expo.
+This React Native app uses Supabase to store and retrieve dog breed information. It fetches data with React-Query and caches it locally using AsyncStorage for offline support.
 
-## 🚀 Features
+---
 
-- ✅ Text-based landing screen header
-- ✅ `TextInput` field for search functionality
-- ✅ `Button` to submit search (optional, included)
-- ✅ `FlatList` to display a scrollable list of items
-- ✅ `ScrollView` for vertically scrollable content
-- ✅ Flexbox layout for responsive UI across devices
-- ✅ Tested on both **Expo Go (mobile)** and **Xcode iOS Simulator**
+## ✅ Supabase Configuration and Table Setup
 
-## 📂 Technologies Used
+- Supabase project set up at [https://app.supabase.com](https://app.supabase.com).
+- Created a table called `dog_breeds` with the following fields:
+  - `id` (UUID, primary key)
+  - `name` (text)
+  - `origin` (text)
+- Populated with sample entries: Labrador, Poodle, and others.
 
-- [React Native](https://reactnative.dev/)
-- [Expo](https://expo.dev/)
-- [TypeScript](https://www.typescriptlang.org/) (optional)
-- iOS Simulator via Xcode
+---
 
-## 🛠️ How to Run the App
+## ✅ How React-Query is Used
 
-Make sure you have [Node.js](https://nodejs.org/) and [Expo CLI](https://docs.expo.dev/workflow/expo-cli/) installed.
+- A custom hook `useDogBreeds()` wraps `useQuery()` from `@tanstack/react-query`.
+- Handles loading, error, and success states.
+- Fetched data is passed to the main list UI in the Home screen.
 
-1. Install dependencies:
+---
 
-   ```bash
-   npm install
+## ✅ How AsyncStorage is Implemented (Extra Credit)
+
+- On load, checks for cached data using `AsyncStorage.getItem`.
+- If available, shows it immediately.
+- When Supabase fetch succeeds, updates the cache with `AsyncStorage.setItem`.
+
+---
+
+## 🔗 GitHub Repo
+
+> `https://github.com/jabuan0910/dev272_spring25-expo-app`
