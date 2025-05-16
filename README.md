@@ -3,6 +3,7 @@
 This React Native app uses Supabase to store and retrieve dog breed information. It fetches data with React-Query and caches it locally using AsyncStorage for offline support.
 
 A mobile app built with React Native, Supabase, and React Query for managing dog breed info. Includes offline support with AsyncStorage. Developed for DEV272 Assignment 5 (Spring 2025).
+
 ---
 
 ## ✅ Supabase Configuration and Table Setup
