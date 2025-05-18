@@ -37,7 +37,9 @@ export default function HomeTab() {
   }
 
   useEffect(() => {
-    setFiltered(breeds);
+    if (breeds.length > 0) {
+      setFiltered(breeds);
+    }
   }, [breeds]);
 
   const onSearch = (text: string) => {
