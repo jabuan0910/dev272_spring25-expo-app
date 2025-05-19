@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import { useRouter } from "expo-router";
 import { useDogBreeds, DogBreed } from "../../hooks/useDogBreeds";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function HomeTab() {
   const router = useRouter();
@@ -71,13 +72,27 @@ export default function HomeTab() {
         renderItem={({ item }) => (
           <TouchableOpacity
             style={styles.card}
+            activeOpacity={0.7}
             onPress={() =>
               router.push(`/detail?name=${item.name}&origin=${item.origin}`)
             }
           >
-            <Text style={styles.name}>{item.name}</Text>
-            <Text style={styles.origin}>{item.origin ?? "Unknown origin"}</Text>
-            <Text style={styles.detailsLink}>Details</Text>
+            <View>
+              <Text style={styles.name}>{item.name}</Text>
+              <Text style={styles.origin}>
+                {item.origin ?? "Unknown origin"}
+              </Text>
+            </View>
+
+            <View style={styles.detailsRow}>
+              <Text style={styles.detailsText}>Details</Text>
+              <Ionicons
+                name="chevron-forward"
+                size={16}
+                color="#007AFF"
+                style={styles.detailsIcon}
+              />
+            </View>
           </TouchableOpacity>
         )}
         ListEmptyComponent={<Text>No items yet</Text>}
@@ -117,6 +132,20 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   detailsLink: {
+    color: "#007AFF",
+    fontSize: 14,
+  },
+  detailsRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 8,
+  },
+  detailsText: {
+    color: "#007AFF",
+    fontSize: 14,
+    marginRight: 4,
+  },
+  detailsIcon: {
     color: "#007AFF",
     fontSize: 14,
   },
