@@ -63,37 +63,42 @@ export default function HomeTab() {
         onChangeText={onSearch}
       />
 
-      <Button title="+ Add New Item" onPress={() => router.push("/add-item")} />
+      <Button
+        title="+ Add New Breed"
+        onPress={() => router.push("/add-breed")}
+      />
 
       <FlatList
         style={{ marginTop: 12 }}
         data={filtered}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <TouchableOpacity
-            style={styles.card}
-            activeOpacity={0.7}
-            onPress={() =>
-              router.push(`/detail?name=${item.name}&origin=${item.origin}`)
-            }
-          >
-            <View>
-              <Text style={styles.name}>{item.name}</Text>
-              <Text style={styles.origin}>
-                {item.origin ?? "Unknown origin"}
-              </Text>
-            </View>
+          <View style={{ marginBottom: 12 }}>
+            <TouchableOpacity
+              style={styles.card}
+              activeOpacity={0.7}
+              onPress={() =>
+                router.push(`/detail?name=${item.name}&origin=${item.origin}`)
+              }
+            >
+              <View>
+                <Text style={styles.name}>{item.name}</Text>
+                <Text style={styles.origin}>
+                  {item.origin ?? "Unknown origin"}
+                </Text>
+              </View>
 
-            <View style={styles.detailsRow}>
-              <Text style={styles.detailsText}>Details</Text>
-              <Ionicons
-                name="chevron-forward"
-                size={16}
-                color="#007AFF"
-                style={styles.detailsIcon}
-              />
-            </View>
-          </TouchableOpacity>
+              <View style={styles.detailsRow}>
+                <Text style={styles.detailsText}>Details</Text>
+                <Ionicons
+                  name="chevron-forward"
+                  size={16}
+                  color="#007AFF"
+                  style={styles.detailsIcon}
+                />
+              </View>
+            </TouchableOpacity>
+          </View>
         )}
         ListEmptyComponent={<Text>No items yet</Text>}
       />
@@ -138,7 +143,7 @@ const styles = StyleSheet.create({
   detailsRow: {
     flexDirection: "row",
     alignItems: "center",
-    marginTop: 8,
+    marginTop: 4,
   },
   detailsText: {
     color: "#007AFF",
