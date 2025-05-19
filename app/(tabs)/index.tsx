@@ -68,11 +68,7 @@ export default function HomeTab() {
         style={{ marginTop: 12 }}
         data={filtered}
         keyExtractor={(item) => item.id}
-        renderItem={({
-          item,
-        }: {
-          item: { id: string; name: string; origin: string };
-        }) => (
+        renderItem={({ item }) => (
           <TouchableOpacity
             style={styles.card}
             onPress={() =>
@@ -81,6 +77,7 @@ export default function HomeTab() {
           >
             <Text style={styles.name}>{item.name}</Text>
             <Text style={styles.origin}>{item.origin ?? "Unknown origin"}</Text>
+            <Text style={styles.detailsLink}>Details</Text>
           </TouchableOpacity>
         )}
         ListEmptyComponent={<Text>No items yet</Text>}
@@ -99,19 +96,28 @@ const styles = StyleSheet.create({
   },
   input: { borderWidth: 1, borderColor: "#ccc", padding: 10, borderRadius: 8 },
   card: {
-    backgroundColor: "#f2f2f2",
-    padding: 15,
-    marginVertical: 8,
-    borderRadius: 8,
+    backgroundColor: "#fff",
+    padding: 16,
+    borderRadius: 12,
+    marginBottom: 12,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
   },
   name: {
     fontSize: 16,
-    fontWeight: "600",
+    fontWeight: "bold",
+    marginBottom: 4,
   },
-
   origin: {
     fontSize: 14,
     color: "#555",
-    marginTop: 4,
+    marginBottom: 8,
+  },
+  detailsLink: {
+    color: "#007AFF",
+    fontSize: 14,
   },
 });
