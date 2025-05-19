@@ -15,10 +15,17 @@ import { useDogBreeds, DogBreed } from "../../hooks/useDogBreeds";
 export default function HomeTab() {
   const router = useRouter();
 
-  const { data: breeds = [], isLoading, isError } = useDogBreeds(); // ✅ safe default
+  const { data, isLoading, isError } = useDogBreeds();
+  const breeds = data ?? [];
 
   const [searchText, setSearchText] = useState("");
   const [filtered, setFiltered] = useState<DogBreed[]>([]);
+
+  useEffect(() => {
+    if (breeds && breeds.length > 0) {
+      setFiltered(breeds);
+    }
+  }, [breeds]);
 
   if (isLoading) {
     return (
@@ -36,12 +43,6 @@ export default function HomeTab() {
     );
   }
 
-  useEffect(() => {
-    if (breeds.length > 0) {
-      setFiltered(breeds);
-    }
-  }, [breeds]);
-
   const onSearch = (text: string) => {
     setSearchText(text);
     const filteredBreeds = breeds.filter((breed) =>
@@ -49,14 +50,6 @@ export default function HomeTab() {
     );
     setFiltered(filteredBreeds);
   };
-
-  // if (!isLoading) {
-  //   return <Text>Loading from Supabase...</Text>;
-  // }
-
-  // if (isError) {
-  //   return <Text>Failed to load dog breeds.</Text>;
-  // }
 
   return (
     <View style={styles.container}>
@@ -75,10 +68,19 @@ export default function HomeTab() {
         style={{ marginTop: 12 }}
         data={filtered}
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <TouchableOpacity style={styles.card}>
+        renderItem={({
+          item,
+        }: {
+          item: { id: string; name: string; origin: string };
+        }) => (
+          <TouchableOpacity
+            style={styles.card}
+            onPress={() =>
+              router.push(`/detail?name=${item.name}&origin=${item.origin}`)
+            }
+          >
             <Text style={styles.name}>{item.name}</Text>
-            <Text style={styles.desc}>{item.origin ?? "Unknown origin"}</Text>
+            <Text style={styles.origin}>{item.origin ?? "Unknown origin"}</Text>
           </TouchableOpacity>
         )}
         ListEmptyComponent={<Text>No items yet</Text>}
@@ -102,6 +104,14 @@ const styles = StyleSheet.create({
     marginVertical: 8,
     borderRadius: 8,
   },
-  name: { fontSize: 16, fontWeight: "600" },
-  desc: { fontSize: 14, color: "#555", marginTop: 4 },
+  name: {
+    fontSize: 16,
+    fontWeight: "600",
+  },
+
+  origin: {
+    fontSize: 14,
+    color: "#555",
+    marginTop: 4,
+  },
 });
