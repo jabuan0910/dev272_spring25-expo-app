@@ -19,6 +19,7 @@ export default function App() {
         >
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen name="add-item" options={{ title: "Save Data" }} />
+          <Stack.Screen name="add-breed" options={{ title: "Add Breed" }} />
           <Stack.Screen name="detail" options={{ title: "Detail" }} />
           <Stack.Screen name="+not-found" options={{ title: "Oops!" }} />
         </Stack>

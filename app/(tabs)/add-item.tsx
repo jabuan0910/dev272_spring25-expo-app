@@ -11,6 +11,13 @@ export default function AddItemScreen() {
   const [error, setError] = useState("");
   const router = useRouter();
 
+  // useLayoutEffect(() => {
+  //   navigation.setOptions({
+  //     headerBackTitle: "Home",
+  //     title: "Add Item",
+  //   });
+  // }, [navigation]);
+
   const handleSubmit = () => {
     if (!name.trim() || !desc.trim()) {
       setError("Both fields are required.");

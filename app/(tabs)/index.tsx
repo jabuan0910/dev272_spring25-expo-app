@@ -100,6 +100,7 @@ export default function HomeTab() {
             </View>
           </View>
         )}
+        ListFooterComponent={<View style={{ height: 80 }} />}
         ListEmptyComponent={<Text>No items yet</Text>}
       />
     </View>
@@ -119,7 +120,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     padding: 16,
     marginVertical: 8,
-    borderRadius: 8,
+    borderRadius: 12,
     marginBottom: 12,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 1 },
