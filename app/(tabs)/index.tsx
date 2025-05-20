@@ -12,6 +12,7 @@ import {
 import { useRouter } from "expo-router";
 import { useDogBreeds, DogBreed } from "../../hooks/useDogBreeds";
 import { Ionicons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
 
 export default function HomeTab() {
   const router = useRouter();
@@ -69,35 +70,34 @@ export default function HomeTab() {
       />
 
       <FlatList
-        style={{ marginTop: 12 }}
+        contentContainerStyle={{ paddingBottom: 40 }}
+        style={{ flex: 1, paddingHorizontal: 16 }}
         data={filtered}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <View style={{ marginBottom: 12 }}>
-            <TouchableOpacity
-              style={styles.card}
-              activeOpacity={0.7}
-              onPress={() =>
-                router.push(`/detail?name=${item.name}&origin=${item.origin}`)
-              }
-            >
-              <View>
-                <Text style={styles.name}>{item.name}</Text>
-                <Text style={styles.origin}>
-                  {item.origin ?? "Unknown origin"}
-                </Text>
-              </View>
+          <View style={styles.card}>
+            {/* === Breed Info === */}
+            <Text style={styles.name}>{item.name}</Text>
+            <Text style={styles.origin}>{item.origin ?? "Unknown origin"}</Text>
 
-              <View style={styles.detailsRow}>
-                <Text style={styles.detailsText}>Details</Text>
-                <Ionicons
-                  name="chevron-forward"
-                  size={16}
-                  color="#007AFF"
-                  style={styles.detailsIcon}
-                />
-              </View>
-            </TouchableOpacity>
+            {/* === Action Row: Edit (left), Details (right) === */}
+            <View style={styles.actionsRow}>
+              <TouchableOpacity
+                onPress={() => router.push(`/edit-breed/${item.id}`)}
+                activeOpacity={0.7}
+              >
+                <Text style={styles.detailsLink}>Edit</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                onPress={() =>
+                  router.push(`/detail?name=${item.name}&origin=${item.origin}`)
+                }
+                activeOpacity={0.7}
+              >
+                <Text style={styles.detailsLink}>Details</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         )}
         ListEmptyComponent={<Text>No items yet</Text>}
@@ -118,7 +118,8 @@ const styles = StyleSheet.create({
   card: {
     backgroundColor: "#fff",
     padding: 16,
-    borderRadius: 12,
+    marginVertical: 8,
+    borderRadius: 8,
     marginBottom: 12,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 1 },
@@ -129,21 +130,33 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 16,
     fontWeight: "bold",
-    marginBottom: 4,
   },
   origin: {
     fontSize: 14,
     color: "#555",
-    marginBottom: 8,
+    marginTop: 4,
   },
+
+  actionsRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 10,
+  },
+
+  editLink: {
+    color: "#007AAFF",
+    fontSize: 16,
+  },
+
   detailsLink: {
     color: "#007AFF",
-    fontSize: 14,
+    fontSize: 16,
   },
   detailsRow: {
     flexDirection: "row",
-    alignItems: "center",
-    marginTop: 4,
+    justifyContent: "flex-end",
+    gap: 20,
+    marginTop: 10,
   },
   detailsText: {
     color: "#007AFF",

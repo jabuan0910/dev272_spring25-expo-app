@@ -2,7 +2,7 @@
 import React, { useState, useContext } from "react";
 import { View, TextInput, Button, Text, StyleSheet } from "react-native";
 import { useRouter } from "expo-router";
-import { ItemsContext } from "../context/ItemsContext";
+import { ItemsContext } from "../../context/ItemsContext";
 
 export default function AddItemScreen() {
   const { addItem } = useContext(ItemsContext);

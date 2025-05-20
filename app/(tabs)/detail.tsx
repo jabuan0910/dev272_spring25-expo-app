@@ -8,7 +8,17 @@ export default function BreedDetail() {
 
   useLayoutEffect(() => {
     if (typeof name === "string") {
-      navigation.setOptions({ title: name });
+      navigation.setOptions({
+        title: name,
+        headerLeft: () => (
+          <Text
+            onPress={() => navigation.goBack()}
+            style={{ marginLeft: 12, color: "#007AFF", fontSize: 17 }}
+          >
+            ← Home
+          </Text>
+        ),
+      });
     }
   }, [navigation, name]);
 

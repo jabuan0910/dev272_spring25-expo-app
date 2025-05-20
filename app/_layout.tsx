@@ -3,6 +3,7 @@ import React from "react";
 import { Stack } from "expo-router";
 import { ItemsProvider } from "../context/ItemsContext";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { Tabs } from "expo-router";
 
 const queryClient = new QueryClient();
 
@@ -12,7 +13,7 @@ export default function App() {
       <ItemsProvider>
         <Stack
           screenOptions={{
-            headerBackTitle: "Back",
+            headerBackTitle: "Home",
             headerTitleAlign: "center",
           }}
         >

@@ -1,6 +1,6 @@
 import { View, Text, TextInput, Button, Alert, StyleSheet } from "react-native";
 import { useState } from "react";
-import { supabase } from "../lib/supabase";
+import { supabase } from "../../lib/supabase";
 import { useRouter } from "expo-router";
 
 export default function AddBreedScreen() {
@@ -9,14 +9,24 @@ export default function AddBreedScreen() {
   const router = useRouter();
 
   const handleAdd = async () => {
+    if (!name.trim() || !origin.trim()) {
+      Alert.alert("Validation Error", "Please enter both name and origin.");
+      return;
+    }
+
     const { error } = await supabase
       .from("dog_breeds")
       .insert([{ name, origin }]);
+
     if (error) {
-      console.log("Insert error:", error);
-    } else {
-      router.replace("/"); // Go back to home
+      Alert.alert("Insert Failed", error.message);
+      return;
     }
+
+    setName("");
+    setOrigin("");
+    Alert.alert("Success", "Breed added!");
+    router.replace("/");
   };
 
   return (
