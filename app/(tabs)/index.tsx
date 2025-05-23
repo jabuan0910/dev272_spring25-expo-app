@@ -8,15 +8,24 @@ import {
   TouchableOpacity,
   StyleSheet,
   Button,
+  Switch,
+  KeyboardAvoidingView,
 } from "react-native";
 import { useRouter } from "expo-router";
 import { useDogBreeds, DogBreed } from "../../hooks/useDogBreeds";
+import { useTheme } from "../../context/ThemeContext";
+import { ScrollView, Platform } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
+import {
+  SafeAreaView,
+  useSafeAreaInsets,
+} from "react-native-safe-area-context";
 
 export default function HomeTab() {
   const router = useRouter();
-
+  const { theme, toggleTheme } = useTheme();
+  const isDark = theme === "dark";
+  const insets = useSafeAreaInsets();
   const { data, isLoading, isError } = useDogBreeds();
   const breeds = data ?? [];
 
@@ -24,26 +33,10 @@ export default function HomeTab() {
   const [filtered, setFiltered] = useState<DogBreed[]>([]);
 
   useEffect(() => {
-    if (breeds && breeds.length > 0) {
+    if (breeds.length > 0) {
       setFiltered(breeds);
     }
   }, [breeds]);
-
-  if (isLoading) {
-    return (
-      <View style={styles.container}>
-        <Text>Loading from Supabase...</Text>
-      </View>
-    );
-  }
-
-  if (isError) {
-    return (
-      <View style={styles.container}>
-        <Text>Failed to load dog breeds.</Text>
-      </View>
-    );
-  }
 
   const onSearch = (text: string) => {
     setSearchText(text);
@@ -53,80 +46,164 @@ export default function HomeTab() {
     setFiltered(filteredBreeds);
   };
 
+  if (isLoading || isError) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <Text>
+          {isLoading
+            ? "Loading from Supabase..."
+            : "Failed to load dog breeds."}
+        </Text>
+      </SafeAreaView>
+    );
+  }
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>My Saved Items</Text>
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
+    >
+      <SafeAreaView
+        style={{
+          flex: 1,
+          backgroundColor: isDark ? "#121212" : "#fff",
+          paddingBottom: insets.bottom,
+        }}
+      >
+        {/* === Toggle Switch Positioned in Top Right === */}
+        <View style={{ position: "absolute", top: 10, right: 20, zIndex: 1 }}>
+          <Switch value={isDark} onValueChange={toggleTheme} />
+        </View>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Search items..."
-        value={searchText}
-        onChangeText={onSearch}
-      />
+        <Text
+          style={[
+            styles.title,
+            {
+              marginBottom: 12,
+              color: isDark ? "#ffffff" : "#000000",
+            },
+          ]}
+        >
+          My Doggie Explorer
+        </Text>
 
-      <Button
-        title="+ Add New Breed"
-        onPress={() => router.push("/add-breed")}
-      />
+        <View style={{ marginHorizontal: 16 }}>
+          <TextInput
+            style={[
+              styles.input,
+              {
+                backgroundColor: isDark ? "#222" : "#f2f2f2",
+                color: isDark ? "#fff" : "#000",
+                borderColor: isDark ? "#555" : "#ccc",
+              },
+            ]}
+            placeholder="Search items..."
+            placeholderTextColor={isDark ? "#999" : "#888"}
+            value={searchText}
+            onChangeText={onSearch}
+          />
+        </View>
 
-      <FlatList
-        contentContainerStyle={{ paddingBottom: 40 }}
-        style={{ flex: 1, paddingHorizontal: 16 }}
-        data={filtered}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <View style={styles.card}>
-            {/* === Breed Info === */}
-            <Text style={styles.name}>{item.name}</Text>
-            <Text style={styles.origin}>{item.origin ?? "Unknown origin"}</Text>
+        <Button
+          title="+ Add New Breed"
+          onPress={() => router.push("/add-breed")}
+        />
 
-            {/* === Action Row: Edit (left), Details (right) === */}
-            <View style={styles.actionsRow}>
-              <TouchableOpacity
-                onPress={() => router.push(`/edit-breed/${item.id}`)}
-                activeOpacity={0.7}
+        <View style={{ flex: 1 }}>
+          <FlatList
+            data={filtered}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => (
+              <View
+                style={[
+                  styles.card,
+                  {
+                    backgroundColor: isDark ? "#1f1f1f" : "#fff",
+                    borderColor: isDark ? "#444" : "#ddd",
+                  },
+                ]}
               >
-                <Text style={styles.detailsLink}>Edit</Text>
-              </TouchableOpacity>
+                <Text
+                  style={[styles.name, { color: isDark ? "#fff" : "#000" }]}
+                >
+                  {item.name}
+                </Text>
+                <Text
+                  style={[styles.origin, { color: isDark ? "#ccc" : "#555" }]}
+                >
+                  {item.origin ?? "Unknown origin"}
+                </Text>
 
-              <TouchableOpacity
-                onPress={() =>
-                  router.push(`/detail?name=${item.name}&origin=${item.origin}`)
-                }
-                activeOpacity={0.7}
-              >
-                <Text style={styles.detailsLink}>Details</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        )}
-        ListFooterComponent={<View style={{ height: 80 }} />}
-        ListEmptyComponent={<Text>No items yet</Text>}
-      />
-    </View>
+                <View style={styles.actionsRow}>
+                  <TouchableOpacity
+                    onPress={() => router.push(`/edit-breed/${item.id}`)}
+                    activeOpacity={0.7}
+                  >
+                    <Text style={styles.detailsLink}>Edit</Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    onPress={() =>
+                      router.push(
+                        `/detail?name=${item.name}&origin=${item.origin}`
+                      )
+                    }
+                    activeOpacity={0.7}
+                  >
+                    <Text style={styles.detailsLink}>Details</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            )}
+            contentContainerStyle={{
+              paddingBottom: -100,
+            }}
+            showsVerticalScrollIndicator={true}
+            scrollIndicatorInsets={{ right: 1 }}
+            ListFooterComponent={<View style={{ height: 0 }} />}
+          />
+        </View>
+      </SafeAreaView>
+    </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 20 },
+  headerSection: {
+    padding: 20,
+  },
   title: {
     fontSize: 22,
     fontWeight: "bold",
-    marginBottom: 20,
+    marginBottom: 10,
     textAlign: "center",
   },
-  input: { borderWidth: 1, borderColor: "#ccc", padding: 10, borderRadius: 8 },
+  input: {
+    borderWidth: 1,
+    padding: 10,
+    borderRadius: 8,
+    marginTop: 8,
+    marginHorizontal: 2,
+    backgroundColor: "#f2f2f2",
+  },
   card: {
     backgroundColor: "#fff",
     padding: 16,
     marginVertical: 8,
+    marginHorizontal: 16, // ⬅️ Add this for side spacing
     borderRadius: 12,
-    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: "#ccc",
+
+    // iOS shadow
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
+    shadowOpacity: 0.15,
+    shadowRadius: 4,
+
+    // Android shadow
+    elevation: 4,
   },
   name: {
     fontSize: 16,
@@ -134,38 +211,15 @@ const styles = StyleSheet.create({
   },
   origin: {
     fontSize: 14,
-    color: "#555",
     marginTop: 4,
   },
-
   actionsRow: {
     flexDirection: "row",
     justifyContent: "space-between",
     marginTop: 10,
   },
-
-  editLink: {
-    color: "#007AAFF",
-    fontSize: 16,
-  },
-
   detailsLink: {
     color: "#007AFF",
     fontSize: 16,
-  },
-  detailsRow: {
-    flexDirection: "row",
-    justifyContent: "flex-end",
-    gap: 20,
-    marginTop: 10,
-  },
-  detailsText: {
-    color: "#007AFF",
-    fontSize: 14,
-    marginRight: 4,
-  },
-  detailsIcon: {
-    color: "#007AFF",
-    fontSize: 14,
   },
 });
