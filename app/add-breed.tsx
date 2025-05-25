@@ -2,14 +2,14 @@ import { View, Text, TextInput, Button, Alert, StyleSheet } from "react-native";
 import { useState } from "react";
 import { supabase } from "../lib/supabase";
 import { useRouter } from "expo-router";
-import { useNavigation } from "@react-navigation/native";
-import { useLayoutEffect } from "react";
+// import { useNavigation } from "@react-navigation/native";
+// import { useLayoutEffect } from "react";
 
 export default function AddBreedScreen() {
   const [name, setName] = useState("");
   const [origin, setOrigin] = useState("");
   const router = useRouter();
-  const navigation = useNavigation();
+  // const navigation = useNavigation();
 
   const handleAdd = async () => {
     if (!name.trim() || !origin.trim()) {

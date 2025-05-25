@@ -1,5 +1,5 @@
 // app/(tabs)/index.tsx
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
   View,
   Text,
@@ -14,8 +14,7 @@ import {
 import { useRouter } from "expo-router";
 import { useDogBreeds, DogBreed } from "../../hooks/useDogBreeds";
 import { useTheme } from "../../context/ThemeContext";
-import { ScrollView, Platform } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { Platform } from "react-native";
 import {
   SafeAreaView,
   useSafeAreaInsets,
@@ -24,11 +23,12 @@ import {
 export default function HomeTab() {
   const router = useRouter();
   const { theme, toggleTheme } = useTheme();
-  const test = "bad spacing";
+  // const test = "bad spacing";
+  // const testValue = "Just testing pre-commit hook";
   const isDark = theme === "dark";
   const insets = useSafeAreaInsets();
   const { data, isLoading, isError } = useDogBreeds();
-  const breeds = data ?? [];
+  const breeds = useMemo(() => data ?? [], [data]);
 
   const [searchText, setSearchText] = useState("");
   const [filtered, setFiltered] = useState<DogBreed[]>([]);
@@ -44,7 +44,7 @@ export default function HomeTab() {
   const onSearch = (text: string) => {
     setSearchText(text);
     const filteredBreeds = breeds.filter((breed) =>
-      breed.name.toLowerCase().includes(text.toLowerCase())
+      breed.name.toLowerCase().includes(text.toLowerCase()),
     );
     setFiltered(filteredBreeds);
   };
@@ -87,7 +87,7 @@ export default function HomeTab() {
             },
           ]}
         >
-          My Doggie Explorer
+          Dog Explorer Search
         </Text>
 
         <View style={{ marginHorizontal: 16 }}>
@@ -148,7 +148,7 @@ export default function HomeTab() {
                   <TouchableOpacity
                     onPress={() =>
                       router.push(
-                        `/detail?name=${item.name}&origin=${item.origin}`
+                        `/detail?name=${item.name}&origin=${item.origin}`,
                       )
                     }
                     activeOpacity={0.7}

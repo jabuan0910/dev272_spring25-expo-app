@@ -3,7 +3,7 @@ import React from "react";
 import { Stack } from "expo-router";
 import { ItemsProvider } from "../context/ItemsContext";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Tabs } from "expo-router";
+// import { Tabs } from "expo-router";
 import { ThemeProvider } from "../context/ThemeContext";
 
 const queryClient = new QueryClient();
