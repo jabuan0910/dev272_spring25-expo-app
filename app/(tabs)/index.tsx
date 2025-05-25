@@ -24,6 +24,7 @@ import {
 export default function HomeTab() {
   const router = useRouter();
   const { theme, toggleTheme } = useTheme();
+  const test = "bad spacing";
   const isDark = theme === "dark";
   const insets = useSafeAreaInsets();
   const { data, isLoading, isError } = useDogBreeds();
@@ -31,6 +32,8 @@ export default function HomeTab() {
 
   const [searchText, setSearchText] = useState("");
   const [filtered, setFiltered] = useState<DogBreed[]>([]);
+  const name = "React Native";
+  console.log(name);
 
   useEffect(() => {
     if (breeds.length > 0) {
